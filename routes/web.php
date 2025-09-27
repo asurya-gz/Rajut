@@ -7,10 +7,16 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
+use App\Http\Controllers\ProductListingController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::view('/about', 'about')->name('about');
+Route::view('/layanan-informasi', 'information')->name('information');
+Route::get('/produk', [ProductListingController::class, 'index'])->name('products.index');
+Route::get('/produk/{product}', [ProductListingController::class, 'show'])->whereNumber('product')->name('products.show');
 
 // Authenticated user routes
 Route::middleware('auth')->group(function () {
@@ -46,6 +52,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
     Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
+    
+    // User management
+    Route::resource('users', AdminUserController::class)->except(['create', 'store']);
 });
 
 require __DIR__.'/auth.php';

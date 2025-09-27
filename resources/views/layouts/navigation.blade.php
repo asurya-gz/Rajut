@@ -4,27 +4,31 @@
         <div class="flex items-center justify-between gap-6 py-4">
             <!-- Logo -->
             <div class="flex items-center shrink-0">
-                <a href="{{ route('home') }}" class="text-3xl font-semibold tracking-wide text-pink-500">
-                    L<span class="text-pink-400">oo</span>PE
+                <a href="{{ route('home') }}" class="flex items-center" aria-label="Beranda LoopE">
+                    <img src="{{ asset('image/logo.png') }}" alt="LoopE" class="h-12 w-auto">
                 </a>
             </div>
 
             <!-- Search Bar -->
             <div class="hidden flex-1 max-w-2xl md:block">
-                <div class="relative">
-                    <input type="text" placeholder="Cari barangmu di sini" class="w-full rounded-full border border-pink-200 bg-pink-50/40 pl-5 pr-14 py-2.5 text-sm text-pink-900 placeholder:text-pink-300 focus:outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100">
-                    <button class="absolute right-1.5 top-1/2 -translate-y-1/2 transform flex h-9 w-9 items-center justify-center rounded-full bg-pink-400 text-white transition hover:bg-pink-500">
+                <form method="GET" action="{{ route('products.index') }}" class="relative" data-loading="Mencari produk...">
+                    <input type="text" name="search" placeholder="Cari barangmu di sini" value="{{ request('search') }}" class="w-full rounded-full border border-pink-200 bg-pink-50/40 pl-5 pr-14 py-2.5 text-sm text-pink-900 placeholder:text-pink-300 focus:outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100">
+                    <button type="submit" class="absolute right-1.5 top-1/2 -translate-y-1/2 transform flex h-9 w-9 items-center justify-center rounded-full bg-pink-400 text-white transition hover:bg-pink-500 disabled:opacity-70">
                         <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                     </button>
-                </div>
+                </form>
             </div>
 
             <!-- Right Section -->
             <div class="hidden items-center space-x-3 md:flex">
                 <!-- Cart with counter -->
+                @auth
                 <a href="{{ route('cart.index') }}" class="relative">
+                @else
+                <a href="{{ route('login') }}" class="relative">
+                @endauth
                     <div class="flex items-center space-x-2 rounded-full border border-pink-200 bg-pink-100/80 px-4 py-2 text-pink-700">
                         <span class="flex h-8 w-8 items-center justify-center rounded-full bg-white/70 text-pink-500">
                             <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -33,42 +37,27 @@
                         </span>
                         <span class="text-sm font-medium">Keranjang Belanja</span>
                     </div>
-                    <span class="absolute -top-2 -right-2 min-w-[20px] rounded-full bg-red-500 px-1.5 py-0.5 text-center text-xs font-semibold text-white shadow-sm">3</span>
+                    <span class="absolute -top-2 -right-2 min-w-[20px] rounded-full bg-red-500 px-1.5 py-0.5 text-center text-xs font-semibold text-white shadow-sm">
+                        {{ $cartItemCount ?? 0 }}
+                    </span>
                 </a>
 
                 <!-- Auth Buttons -->
                 @auth
-                    <x-dropdown align="right" width="48">
-                        <x-slot name="trigger">
-                            <button class="rounded-full bg-pink-400 px-5 py-2 text-sm font-medium text-white transition hover:bg-pink-500">
-                                {{ Auth::user()->name }}
+                    <div class="flex items-center space-x-3">
+                        <span class="hidden text-sm text-gray-600 lg:inline">Halo, {{ Auth::user()->name }}</span>
+                        @if(auth()->user()?->isAdmin())
+                            <a href="{{ route('admin.dashboard') }}" class="rounded-full border border-pink-300 bg-white px-5 py-2 text-sm font-medium text-pink-600 transition hover:bg-pink-50">
+                                Admin
+                            </a>
+                        @endif
+                        <form method="POST" action="{{ route('logout') }}" data-loading="Keluar...">
+                            @csrf
+                            <button type="submit" class="rounded-full bg-pink-500 px-5 py-2 text-sm font-medium text-white transition hover:bg-pink-600 disabled:opacity-70 disabled:cursor-not-allowed">
+                                <span class="button-text">Logout</span>
                             </button>
-                        </x-slot>
-
-                        <x-slot name="content">
-                            <x-dropdown-link :href="route('profile.edit')">
-                                {{ __('Profile') }}
-                            </x-dropdown-link>
-                            <x-dropdown-link :href="route('orders.index')">
-                                {{ __('Orders') }}
-                            </x-dropdown-link>
-                            @if(auth()->user()?->isAdmin())
-                                <x-dropdown-link :href="route('admin.dashboard')">
-                                    {{ __('Admin') }}
-                                </x-dropdown-link>
-                            @endif
-
-                            <!-- Authentication -->
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <x-dropdown-link :href="route('logout')"
-                                        onclick="event.preventDefault();
-                                                    this.closest('form').submit();">
-                                    {{ __('Log Out') }}
-                                </x-dropdown-link>
-                            </form>
-                        </x-slot>
-                    </x-dropdown>
+                        </form>
+                    </div>
                 @else
                     <a href="{{ route('register') }}" class="rounded-full border border-pink-200 bg-pink-100/70 px-5 py-2 text-sm font-medium text-pink-600 transition hover:bg-pink-200">
                         Daftar
@@ -92,14 +81,14 @@
 
         <!-- Search Bar (tablet & below) -->
         <div class="md:hidden">
-            <div class="relative pb-3">
-                <input type="text" placeholder="Cari barangmu di sini" class="w-full rounded-full border border-pink-200 bg-pink-50/40 pl-4 pr-12 py-2 text-sm text-pink-900 placeholder:text-pink-300 focus:outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100">
-                <button class="absolute right-1 top-1/2 -translate-y-1/2 transform flex h-8 w-8 items-center justify-center rounded-full bg-pink-400 text-white transition hover:bg-pink-500">
+            <form method="GET" action="{{ route('products.index') }}" class="relative pb-3" data-loading="Mencari produk...">
+                <input type="text" name="search" placeholder="Cari barangmu di sini" value="{{ request('search') }}" class="w-full rounded-full border border-pink-200 bg-pink-50/40 pl-4 pr-12 py-2 text-sm text-pink-900 placeholder:text-pink-300 focus:outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100">
+                <button type="submit" class="absolute right-1 top-1/2 -translate-y-1/2 transform flex h-8 w-8 items-center justify-center rounded-full bg-pink-400 text-white transition hover:bg-pink-500 disabled:opacity-70">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                 </button>
-            </div>
+            </form>
         </div>
     </div>
 
@@ -107,16 +96,21 @@
     <div class="bg-[#c65b7c]">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-center space-x-10 py-3 text-white">
-                <a href="#" class="text-sm font-semibold tracking-wide transition hover:text-pink-200">
+                <a href="{{ route('home') }}" class="text-sm font-semibold tracking-wide transition hover:text-pink-200">
                     Beranda
                 </a>
-                <a href="#" class="text-sm font-semibold tracking-wide transition hover:text-pink-200">
-                    Pesanan
+                <a href="{{ route('products.index') }}" class="text-sm font-semibold tracking-wide transition hover:text-pink-200">
+                    Produk
                 </a>
-                <a href="#" class="text-sm font-semibold tracking-wide transition hover:text-pink-200">
+                @auth
+                <a href="{{ route('orders.index') }}" class="text-sm font-semibold tracking-wide transition hover:text-pink-200">
+                    History
+                </a>
+                @endauth
+                <a href="{{ route('information') }}" class="text-sm font-semibold tracking-wide transition hover:text-pink-200">
                     Layanan Informasi
                 </a>
-                <a href="#" class="text-sm font-semibold tracking-wide transition hover:text-pink-200">
+                <a href="{{ route('about') }}" class="text-sm font-semibold tracking-wide transition hover:text-pink-200">
                     Tentang Kami
                 </a>
             </div>
@@ -127,14 +121,14 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-white border-t border-gray-200">
         <!-- Search Bar Mobile -->
         <div class="px-4 py-3">
-            <div class="relative">
-                <input type="text" placeholder="Cari barangmu di sini" class="w-full rounded-full border border-pink-200 bg-pink-50/40 px-4 py-2 pr-12 text-sm text-pink-900 placeholder:text-pink-300 focus:outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100">
-                <button class="absolute right-1 top-1/2 -translate-y-1/2 transform flex h-8 w-8 items-center justify-center rounded-full bg-pink-400 text-white transition hover:bg-pink-500">
+            <form method="GET" action="{{ route('products.index') }}" class="relative" data-loading="Mencari produk...">
+                <input type="text" name="search" placeholder="Cari barangmu di sini" value="{{ request('search') }}" class="w-full rounded-full border border-pink-200 bg-pink-50/40 px-4 py-2 pr-12 text-sm text-pink-900 placeholder:text-pink-300 focus:outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100">
+                <button type="submit" class="absolute right-1 top-1/2 -translate-y-1/2 transform flex h-8 w-8 items-center justify-center rounded-full bg-pink-400 text-white transition hover:bg-pink-500 disabled:opacity-70">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                     </svg>
                 </button>
-            </div>
+            </form>
         </div>
 
         <!-- Navigation Links -->
@@ -142,16 +136,27 @@
             <a href="{{ route('home') }}" class="block rounded-md px-3 py-2 text-gray-700 transition hover:bg-pink-50 hover:text-pink-600">
                 Beranda
             </a>
+            @auth
             <a href="{{ route('cart.index') }}" class="block rounded-md px-3 py-2 text-gray-700 transition hover:bg-pink-50 hover:text-pink-600">
                 Keranjang Belanja
             </a>
-            <a href="{{ route('orders.index') }}" class="block rounded-md px-3 py-2 text-gray-700 transition hover:bg-pink-50 hover:text-pink-600">
-                Pesanan
+            @else
+            <a href="{{ route('login') }}" class="block rounded-md px-3 py-2 text-gray-700 transition hover:bg-pink-50 hover:text-pink-600">
+                Keranjang Belanja
             </a>
-            <a href="#" class="block rounded-md px-3 py-2 text-gray-700 transition hover:bg-pink-50 hover:text-pink-600">
+            @endauth
+            <a href="{{ route('products.index') }}" class="block rounded-md px-3 py-2 text-gray-700 transition hover:bg-pink-50 hover:text-pink-600">
+                Produk
+            </a>
+            @auth
+            <a href="{{ route('orders.index') }}" class="block rounded-md px-3 py-2 text-gray-700 transition hover:bg-pink-50 hover:text-pink-600">
+                History
+            </a>
+            @endauth
+            <a href="{{ route('information') }}" class="block rounded-md px-3 py-2 text-gray-700 transition hover:bg-pink-50 hover:text-pink-600">
                 Layanan Informasi
             </a>
-            <a href="#" class="block rounded-md px-3 py-2 text-gray-700 transition hover:bg-pink-50 hover:text-pink-600">
+            <a href="{{ route('about') }}" class="block rounded-md px-3 py-2 text-gray-700 transition hover:bg-pink-50 hover:text-pink-600">
                 Tentang Kami
             </a>
             @if(auth()->user()?->isAdmin())
@@ -172,10 +177,10 @@
                     <a href="{{ route('profile.edit') }}" class="block px-3 py-2 text-gray-700 hover:bg-pink-50 hover:text-pink-600 rounded-md">
                         Profile
                     </a>
-                    <form method="POST" action="{{ route('logout') }}">
+                    <form method="POST" action="{{ route('logout') }}" data-loading="Keluar...">
                         @csrf
-                        <button type="submit" class="w-full text-left px-3 py-2 text-gray-700 hover:bg-pink-50 hover:text-pink-600 rounded-md">
-                            Log Out
+                        <button type="submit" class="w-full text-left px-3 py-2 text-gray-700 hover:bg-pink-50 hover:text-pink-600 rounded-md disabled:opacity-70 disabled:cursor-not-allowed">
+                            <span class="button-text">Log Out</span>
                         </button>
                     </form>
                 </div>

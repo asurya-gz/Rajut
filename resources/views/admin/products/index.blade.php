@@ -1,86 +1,77 @@
-<x-app-layout>
+<x-admin-layout title="Kelola Produk">
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Manage Products') }}
-            </h2>
-            <a href="{{ route('admin.products.create') }}" 
-               class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md font-medium">
-                Add New Product
+        <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Kelola Produk</h1>
+                <p class="text-sm text-gray-500">Pantau katalog LoopE dan lakukan pembaruan secara cepat dan nyaman.</p>
+            </div>
+            <a href="{{ route('admin.products.create') }}" class="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-pink-200/60 transition hover:shadow-xl hover:-translate-y-0.5">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Tambah Produk Baru
             </a>
         </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6">
-                    @if($products->count() > 0)
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
+    <div class="space-y-6">
+        <div class="rounded-3xl border border-pink-100 bg-white/80 shadow-xl shadow-pink-100/50 backdrop-blur">
+            <div class="p-6">
+                @if($products->count() > 0)
+                    <div class="overflow-x-auto -mx-6">
+                        <div class="inline-block min-w-full align-middle px-6">
+                            <table class="min-w-full divide-y divide-pink-100">
+                                <thead class="bg-gradient-to-r from-pink-50 to-rose-50">
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Product
-                                        </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Category
-                                        </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Price
-                                        </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Stock
-                                        </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Status
-                                        </th>
-                                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Actions
-                                        </th>
+                                        <th class="py-3 text-left text-xs font-semibold uppercase tracking-wider text-pink-500">Produk</th>
+                                        <th class="py-3 text-left text-xs font-semibold uppercase tracking-wider text-pink-500">Kategori</th>
+                                        <th class="py-3 text-left text-xs font-semibold uppercase tracking-wider text-pink-500">Harga</th>
+                                        <th class="py-3 text-left text-xs font-semibold uppercase tracking-wider text-pink-500">Stok</th>
+                                        <th class="py-3 text-left text-xs font-semibold uppercase tracking-wider text-pink-500">Status</th>
+                                        <th class="py-3 text-right text-xs font-semibold uppercase tracking-wider text-pink-500">Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
+                                <tbody class="divide-y divide-pink-50 bg-white/70">
                                     @foreach($products as $product)
-                                        <tr>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div>
-                                                    <div class="text-sm font-medium text-gray-900">{{ $product->name }}</div>
+                                        <tr class="transition hover:bg-pink-50/70">
+                                            <td class="py-4 text-sm font-semibold text-gray-900">
+                                                <div class="flex flex-col">
+                                                    <span>{{ $product->name }}</span>
+                                                    <span class="text-xs text-gray-400">ID #{{ $product->id }}</span>
                                                 </div>
                                             </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="text-sm text-gray-900">{{ $product->category->name }}</div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="text-sm text-gray-900">
-                                                    Rp {{ number_format($product->price, 0, ',', '.') }}
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="text-sm text-gray-900">{{ $product->stock }}</div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
-                                                           {{ $product->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                            <td class="py-4 text-sm text-gray-600">{{ $product->category->name }}</td>
+                                            <td class="py-4 text-sm font-semibold text-gray-900">Rp {{ number_format($product->price, 0, ',', '.') }}</td>
+                                            <td class="py-4 text-sm font-medium text-gray-900">{{ $product->stock }}</td>
+                                            <td class="py-4">
+                                                <span class="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold {{ $product->is_active ? 'bg-emerald-50 text-emerald-600 ring-1 ring-emerald-200' : 'bg-rose-50 text-rose-600 ring-1 ring-rose-200' }}">
+                                                    <span class="h-2 w-2 rounded-full {{ $product->is_active ? 'bg-emerald-500' : 'bg-rose-500' }}"></span>
                                                     {{ $product->is_active ? 'Active' : 'Inactive' }}
                                                 </span>
                                             </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                <div class="flex items-center justify-end space-x-2">
-                                                    <a href="{{ route('admin.products.show', $product) }}" 
-                                                       class="text-indigo-600 hover:text-indigo-900">View</a>
-                                                    
-                                                    <a href="{{ route('admin.products.edit', $product) }}" 
-                                                       class="text-yellow-600 hover:text-yellow-900">Edit</a>
-                                                    
-                                                    <form method="POST" action="{{ route('admin.products.destroy', $product) }}" 
-                                                          class="inline">
+                                            <td class="py-4 text-right text-sm font-medium">
+                                                <div class="flex items-center justify-end gap-2">
+                                                    <a href="{{ route('admin.products.show', $product) }}" class="inline-flex items-center gap-1 rounded-full border border-pink-100 px-3 py-1.5 text-xs font-semibold text-pink-500 transition hover:border-pink-300 hover:text-pink-600">
+                                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                        </svg>
+                                                        Lihat
+                                                    </a>
+                                                    <a href="{{ route('admin.products.edit', $product) }}" class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1.5 text-xs font-semibold text-amber-700 transition hover:bg-amber-200">
+                                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                                        </svg>
+                                                        Edit
+                                                    </a>
+                                                    <form method="POST" action="{{ route('admin.products.destroy', $product) }}" class="inline" onsubmit="return confirm('Hapus produk ini?')">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" 
-                                                                class="text-red-600 hover:text-red-900"
-                                                                onclick="return confirm('Are you sure you want to delete this product?')">
-                                                            Delete
+                                                        <button type="submit" class="inline-flex items-center gap-1 rounded-full bg-rose-100 px-3 py-1.5 text-xs font-semibold text-rose-600 transition hover:bg-rose-200">
+                                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                            </svg>
+                                                            Hapus
                                                         </button>
                                                     </form>
                                                 </div>
@@ -90,21 +81,27 @@
                                 </tbody>
                             </table>
                         </div>
-                        
-                        <div class="mt-4">
-                            {{ $products->links() }}
+                    </div>
+
+                    <div class="mt-8 flex justify-center">
+                        <div class="rounded-full border border-pink-100 bg-white/80 px-5 py-3 shadow-lg shadow-pink-100/50 backdrop-blur-sm">
+                            {{ $products->onEachSide(1)->links('vendor.pagination.custom') }}
                         </div>
-                    @else
-                        <div class="text-center py-8">
-                            <p class="text-gray-500">No products found.</p>
-                            <a href="{{ route('admin.products.create') }}" 
-                               class="inline-block mt-4 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md font-medium">
-                                Add First Product
-                            </a>
+                    </div>
+                @else
+                    <div class="py-12 text-center">
+                        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-pink-50">
+                            <svg class="h-8 w-8 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2M4 13h2m13-4h-2m0 0V6a2 2 0 00-2-2H9a2 2 0 00-2 2v3m6 0V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v3" />
+                            </svg>
                         </div>
-                    @endif
-                </div>
+                        <p class="text-gray-500">Belum ada produk yang tercatat.</p>
+                        <a href="{{ route('admin.products.create') }}" class="mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:shadow-xl hover:-translate-y-0.5">
+                            Tambah Produk Pertama
+                        </a>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-admin-layout>

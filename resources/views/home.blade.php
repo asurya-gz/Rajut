@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-app-layout title="Beranda">
     <!-- Hero Section -->
     <div class="relative bg-gradient-to-br from-pink-100 via-pink-50 to-purple-50 overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -133,12 +133,21 @@
                     </p>
                     
                     <div class="flex flex-col sm:flex-row gap-4">
-                        <a href="#products" class="inline-flex items-center justify-center px-8 py-3 bg-pink-500 text-white font-semibold rounded-full hover:bg-pink-600 transition duration-300 shadow-lg hover:shadow-xl">
-                            Belanja Sekarang
-                        </a>
-                        <a href="{{ route('register') }}" class="inline-flex items-center justify-center px-8 py-3 border-2 border-pink-300 text-pink-600 font-semibold rounded-full hover:bg-pink-50 transition duration-300">
-                            Daftar
-                        </a>
+                        @auth
+                            <a href="{{ route('products.index') }}" class="inline-flex items-center justify-center px-8 py-3 bg-pink-500 text-white font-semibold rounded-full hover:bg-pink-600 transition duration-300 shadow-lg hover:shadow-xl" data-loading="Memuat produk...">
+                                Lihat Produk
+                            </a>
+                            <a href="{{ route('cart.index') }}" class="inline-flex items-center justify-center px-8 py-3 border-2 border-pink-300 text-pink-600 font-semibold rounded-full hover:bg-pink-50 transition duration-300" data-loading="Memuat keranjang...">
+                                Keranjang Belanja
+                            </a>
+                        @else
+                            <a href="#products" class="inline-flex items-center justify-center px-8 py-3 bg-pink-500 text-white font-semibold rounded-full hover:bg-pink-600 transition duration-300 shadow-lg hover:shadow-xl">
+                                Belanja Sekarang
+                            </a>
+                            <a href="{{ route('register') }}" class="inline-flex items-center justify-center px-8 py-3 border-2 border-pink-300 text-pink-600 font-semibold rounded-full hover:bg-pink-50 transition duration-300">
+                                Daftar
+                            </a>
+                        @endauth
                     </div>
                 </div>
             </div>
@@ -186,6 +195,14 @@
                         </div>
                     @endforelse
                 </div>
+
+                @if($popularProducts->isNotEmpty())
+                    <div class="mt-8 flex justify-center">
+                        <a href="{{ route('products.index') }}" class="inline-flex items-center px-6 py-2 bg-pink-500 text-white font-semibold rounded-full shadow-lg hover:bg-pink-600 transition">
+                            Lihat Produk Lainnya
+                        </a>
+                    </div>
+                @endif
             </div>
 
             <div>
@@ -242,11 +259,6 @@
                     @endforelse
                 </div>
 
-                <div class="mt-10 flex justify-center">
-                    <div class="rounded-full border border-pink-100 bg-white/80 px-5 py-3 shadow-lg backdrop-blur-sm">
-                        {{ $latestProducts->onEachSide(1)->links('vendor.pagination.custom') }}
-                    </div>
-                </div>
             </div>
         </div>
     </div>

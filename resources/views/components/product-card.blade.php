@@ -40,31 +40,32 @@
             </p>
         </div>
 
-        @auth
-            @if($product->stock > 0)
-                <form method="POST" action="{{ route('cart.store') }}" class="space-y-3">
-                    @csrf
-                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Jumlah</label>
-                        <input type="number" name="qty" value="1" min="1" max="{{ $product->stock }}"
-                               class="w-full rounded-lg border-pink-200 shadow-sm focus:border-pink-400 focus:ring-pink-300 bg-pink-50/50">
-                    </div>
-
-                    <button type="submit" class="w-full bg-pink-500 hover:bg-pink-600 text-white py-2.5 px-4 rounded-lg font-medium transition duration-300 shadow-lg hover:shadow-xl">
-                        Tambah ke Keranjang
-                    </button>
-                </form>
-            @else
-                <div class="text-center py-4">
-                    <p class="text-red-500 font-medium">Stok Habis</p>
-                </div>
-            @endif
-        @else
-            <a href="{{ route('login') }}" class="block w-full bg-gray-500 hover:bg-gray-600 text-white py-2.5 px-4 rounded-lg font-medium text-center transition duration-300">
-                Login untuk Membeli
+        <div class="space-y-3">
+            <a href="{{ route('products.show', $product) }}" class="block w-full border border-pink-200 bg-white text-pink-600 hover:text-white hover:bg-pink-500 py-2.5 px-4 rounded-lg font-medium text-center transition duration-300">
+                Lihat Detail
             </a>
-        @endauth
+
+            @auth
+                @if($product->stock > 0)
+                    <form method="POST" action="{{ route('cart.store') }}" data-loading="Menambahkan...">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                        <input type="hidden" name="qty" value="1">
+
+                        <button type="submit" class="w-full bg-pink-500 hover:bg-pink-600 text-white py-2.5 px-4 rounded-lg font-medium transition duration-300 shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed">
+                            <span class="button-text">Tambah ke Keranjang</span>
+                        </button>
+                    </form>
+                @else
+                    <div class="text-center py-4">
+                        <p class="text-red-500 font-medium">Stok Habis</p>
+                    </div>
+                @endif
+            @else
+                <a href="{{ route('login') }}" class="block w-full bg-gray-500 hover:bg-gray-600 text-white py-2.5 px-4 rounded-lg font-medium text-center transition duration-300">
+                    Login untuk Membeli
+                </a>
+            @endauth
+        </div>
     </div>
 </div>
